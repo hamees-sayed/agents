@@ -10,4 +10,4 @@ pip install livekit-plugins-smallest
 
 ## Pre-requisites
 
-You'll need an API key from Cartesia. It can be set as an environment variable: `SMALLEST_API_KEY`
+You'll need an API key from [smallest.ai](https://waves.smallest.ai/apikeys). It can be set as an environment variable: `SMALLEST_API_KEY`
