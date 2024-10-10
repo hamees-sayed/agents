@@ -21,7 +21,7 @@ class _TTSOptions:
     voice: TTSVoices
     api_key: str
     language: TTSLanguages
-    add_wav_header: bool = True
+    add_wav_header: bool
 
 
 class TTS(tts.TTS):
@@ -34,6 +34,7 @@ class TTS(tts.TTS):
         voice: TTSVoices = "emily",
         sample_rate: int = 24000,
         api_key: str | None = None,
+        add_wav_header: bool = True,
         http_session: aiohttp.ClientSession | None = None,
     ) -> None:
         """
@@ -46,6 +47,7 @@ class TTS(tts.TTS):
             voice (VoiceSettings, optional): The voice settings to use. Defaults to "emily".
             sample_rate (int, optional): The audio sample rate in Hz. Defaults to 24000.
             api_key (str, optional): The smallest.ai API key. If not provided, it will be read from the SMALLEST_API_KEY environment variable.
+            add_wav_header (bool, optional): If True, includes a WAV header in the audio output; otherwise, only raw audio data is returned.
             http_session (aiohttp.ClientSession | None, optional): An existing aiohttp ClientSession to use. If not provided, a new session will be created.
         """
 
@@ -66,6 +68,7 @@ class TTS(tts.TTS):
             sample_rate=sample_rate,
             voice=voice,
             api_key=api_key,
+            add_wav_header=add_wav_header
         )
         self._session = http_session
 
