@@ -1,4 +1,4 @@
-# LiveKit Plugins Cartesia
+# LiveKit Plugins Smallest
 
 Agent Framework plugin for voice synthesis with [Smallest](https://smallest.ai/) API.
 
