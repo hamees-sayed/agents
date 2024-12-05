@@ -1,5 +1,85 @@
 # livekit-plugins-openai
 
+## 0.10.9
+
+### Patch Changes
+
+- fix release - [#1176](https://github.com/livekit/agents/pull/1176) ([@theomonnom](https://github.com/theomonnom))
+
+## 0.10.8
+
+### Patch Changes
+
+- fix uncatched OAI errors - [#1158](https://github.com/livekit/agents/pull/1158) ([@theomonnom](https://github.com/theomonnom))
+
+- feat: stt retry & stt.FallbackAdapter - [#1114](https://github.com/livekit/agents/pull/1114) ([@theomonnom](https://github.com/theomonnom))
+
+- project id fix for google - [#1115](https://github.com/livekit/agents/pull/1115) ([@jayeshp19](https://github.com/jayeshp19))
+
+- Add retries to recover from text mode to audio model for realtime API - [#1121](https://github.com/livekit/agents/pull/1121) ([@longcw](https://github.com/longcw))
+
+- Support for Python 3.13, relaxed Pillow version requirement for 10.x - [#1127](https://github.com/livekit/agents/pull/1127) ([@davidzhao](https://github.com/davidzhao))
+
+- support for custom tool use in LLMs - [#1102](https://github.com/livekit/agents/pull/1102) ([@jayeshp19](https://github.com/jayeshp19))
+
+- feat: tts retry & tts.FallbackAdapter - [#1074](https://github.com/livekit/agents/pull/1074) ([@theomonnom](https://github.com/theomonnom))
+
+- Add new OpenAI realtime voices - [#1116](https://github.com/livekit/agents/pull/1116) ([@bcherry](https://github.com/bcherry))
+
+- Expose multimodal agent metrics - [#1080](https://github.com/livekit/agents/pull/1080) ([@longcw](https://github.com/longcw))
+
+- feat: llm retry & llm.FallbackAdapter - [#1132](https://github.com/livekit/agents/pull/1132) ([@theomonnom](https://github.com/theomonnom))
+
+- vertex ai support with openai library - [#1084](https://github.com/livekit/agents/pull/1084) ([@jayeshp19](https://github.com/jayeshp19))
+
+## 0.10.7
+
+### Patch Changes
+
+- fix realtime API audio format values - [#1092](https://github.com/livekit/agents/pull/1092) ([@longcw](https://github.com/longcw))
+
+- make ConversationItem.create and delete return a Future in Realtime model - [#1085](https://github.com/livekit/agents/pull/1085) ([@longcw](https://github.com/longcw))
+
+## 0.10.6
+
+### Patch Changes
+
+- Expose usage metrics for Realtime model - [#1036](https://github.com/livekit/agents/pull/1036) ([@yuyuma](https://github.com/yuyuma))
+
+- sync the Realtime API converstation items and add set_chat_ctx - [#1015](https://github.com/livekit/agents/pull/1015) ([@longcw](https://github.com/longcw))
+
+## 0.10.5
+
+### Patch Changes
+
+- fix: Azure realtime model does not accept null for max_response_output_tokens - [#927](https://github.com/livekit/agents/pull/927) ([@davidzhao](https://github.com/davidzhao))
+
+- add update_options to TTS - [#922](https://github.com/livekit/agents/pull/922) ([@theomonnom](https://github.com/theomonnom))
+
+- Groq integration with Whisper-compatible STT endpoints - [#986](https://github.com/livekit/agents/pull/986) ([@jayeshp19](https://github.com/jayeshp19))
+
+- pipelineagent: expose timing metrics & api errors wip - [#957](https://github.com/livekit/agents/pull/957) ([@theomonnom](https://github.com/theomonnom))
+
+- openai: fix low timeouts - [#926](https://github.com/livekit/agents/pull/926) ([@theomonnom](https://github.com/theomonnom))
+
+- expose usage metrics - [#984](https://github.com/livekit/agents/pull/984) ([@theomonnom](https://github.com/theomonnom))
+
+## 0.10.4
+
+### Patch Changes
+
+- add x.ai support - [#907](https://github.com/livekit/agents/pull/907) ([@theomonnom](https://github.com/theomonnom))
+
+- Fix functions to include content - [#897](https://github.com/livekit/agents/pull/897) ([@martin-purplefish](https://github.com/martin-purplefish))
+
+## 0.10.3
+
+### Patch Changes
+
+- fix: handle when STT does not return any speech - [#854](https://github.com/livekit/agents/pull/854) ([@davidzhao](https://github.com/davidzhao))
+
+- Support for Realtime API with Azure OpenAI - [#848](https://github.com/livekit/agents/pull/848) ([@davidzhao](https://github.com/davidzhao))
+
 ## 0.10.2
 
 ### Patch Changes

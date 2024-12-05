@@ -1,5 +1,25 @@
 # livekit-plugins-silero
 
+## 0.7.4
+
+### Patch Changes
+
+- fix release - [#1176](https://github.com/livekit/agents/pull/1176) ([@theomonnom](https://github.com/theomonnom))
+
+## 0.7.3
+
+### Patch Changes
+
+- pipelineagent: expose timing metrics & api errors wip - [#957](https://github.com/livekit/agents/pull/957) ([@theomonnom](https://github.com/theomonnom))
+
+## 0.7.2
+
+### Patch Changes
+
+- silero: add update_options - [#899](https://github.com/livekit/agents/pull/899) ([@theomonnom](https://github.com/theomonnom))
+
+- silero: fix speech_buffer for END_OF_SPEECH - [#898](https://github.com/livekit/agents/pull/898) ([@theomonnom](https://github.com/theomonnom))
+
 ## 0.7.1
 
 ### Patch Changes

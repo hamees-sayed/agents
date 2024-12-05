@@ -16,9 +16,17 @@ NOISY_LOGGERS = [
     "httpx",
     "httpcore",
     "openai",
-    "livekit",
     "watchfiles",
+    "anthropic",
 ]
+
+
+def _silence_noisy_loggers() -> None:
+    for noisy_logger in NOISY_LOGGERS:
+        logger = logging.getLogger(noisy_logger)
+        if logger.level == logging.NOTSET:
+            logger.setLevel(logging.WARN)
+
 
 # skip default LogRecord attributes
 # http://docs.python.org/library/logging.html#logrecord-attributes
@@ -145,6 +153,7 @@ class ColoredFormatter(logging.Formatter):
             "esc_blue": self._esc(34),
             "esc_purple": self._esc(35),
             "esc_cyan": self._esc(36),
+            "esc_gray": self._esc(90),
             "esc_bold_red": self._esc(1, 31),
         }
 
@@ -196,7 +205,7 @@ def setup_logging(log_level: str, devmode: bool) -> None:
     if devmode:
         # colorful logs for dev (improves readability)
         colored_formatter = ColoredFormatter(
-            "%(asctime)s - %(esc_levelcolor)s%(levelname)-4s%(esc_reset)s %(name)s - %(message)s %(extra)s"
+            "%(asctime)s - %(esc_levelcolor)s%(levelname)-4s%(esc_reset)s %(name)s - %(message)s %(esc_gray)s%(extra)s"
         )
         handler.setFormatter(colored_formatter)
     else:
@@ -208,10 +217,7 @@ def setup_logging(log_level: str, devmode: bool) -> None:
     root.addHandler(handler)
     root.setLevel(log_level)
 
-    for noisy_logger in NOISY_LOGGERS:
-        logger = logging.getLogger(noisy_logger)
-        if logger.level == logging.NOTSET:
-            logger.setLevel(logging.WARN)
+    _silence_noisy_loggers()
 
     from ..log import logger
 

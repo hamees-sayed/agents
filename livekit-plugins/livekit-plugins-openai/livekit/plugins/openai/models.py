@@ -70,9 +70,23 @@ GroqChatModels = Literal[
     "gemma2-9b-it",
 ]
 
+GroqAudioModels = Literal[
+    "whisper-large-v3", "distil-whisper-large-v3-en", "whisper-large-v3-turbo"
+]
+
 DeepSeekChatModels = Literal[
     "deepseek-coder",
     "deepseek-chat",
+]
+
+VertexModels = Literal[
+    "google/gemini-1.5-flash",
+    "google/gemini-1.5-pro",
+    "google/gemini-1.0-pro-vision",
+    "google/gemini-1.0-pro-vision-001",
+    "google/gemini-1.0-pro-002",
+    "google/gemini-1.0-pro-001",
+    "google/gemini-1.0-pro",
 ]
 
 TogetherChatModels = Literal[
@@ -155,4 +169,12 @@ OctoChatModels = Literal[
     "mistral-7b-instruct",
     "mixtral-8x7b-instruct",
     "wizardlm-2-8x22bllamaguard-2-7b",
+]
+
+
+XAIChatModels = Literal[
+    "grok-2",
+    "grok-2-mini",
+    "grok-2-mini-public",
+    "grok-2-public",
 ]

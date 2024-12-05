@@ -10,9 +10,10 @@ from livekit.agents import (
     WorkerOptions,
     cli,
     llm,
+    metrics,
 )
 from livekit.agents.pipeline import VoicePipelineAgent
-from livekit.plugins import deepgram, openai, silero
+from livekit.plugins import deepgram, openai, silero, turn_detector
 
 load_dotenv()
 logger = logging.getLogger("voice-assistant")
@@ -48,10 +49,24 @@ async def entrypoint(ctx: JobContext):
         stt=deepgram.STT(model=dg_model),
         llm=openai.LLM(),
         tts=openai.TTS(),
+        turn_detector=turn_detector.EOUModel(),
         chat_ctx=initial_ctx,
     )
 
     agent.start(ctx.room, participant)
+
+    usage_collector = metrics.UsageCollector()
+
+    @agent.on("metrics_collected")
+    def _on_metrics_collected(mtrcs: metrics.AgentMetrics):
+        metrics.log_metrics(mtrcs)
+        usage_collector.collect(mtrcs)
+
+    async def log_usage():
+        summary = usage_collector.get_summary()
+        logger.info(f"Usage: ${summary}")
+
+    ctx.add_shutdown_callback(log_usage)
 
     # listen to incoming chat messages, only required if you'd like the agent to
     # answer incoming messages from Chat
@@ -72,4 +87,9 @@ async def entrypoint(ctx: JobContext):
 
 
 if __name__ == "__main__":
-    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
+    cli.run_app(
+        WorkerOptions(
+            entrypoint_fnc=entrypoint,
+            prewarm_fnc=prewarm,
+        ),
+    )

@@ -234,6 +234,7 @@ def _run_dev(
 
 def run_worker(args: proto.CliArgs) -> None:
     setup_logging(args.log_level, args.devmode)
+    args.opts.validate_config(args.devmode)
 
     loop = asyncio.get_event_loop()
     worker = Worker(args.opts, devmode=args.devmode, loop=loop)
@@ -270,9 +271,7 @@ def run_worker(args: proto.CliArgs) -> None:
     if args.watch:
         from .watcher import WatchClient
 
-        assert args.mp_cch is not None
-
-        watch_client = WatchClient(worker, args.mp_cch, loop=loop)
+        watch_client = WatchClient(worker, args, loop=loop)
         watch_client.start()
 
     try:

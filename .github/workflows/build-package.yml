@@ -12,19 +12,20 @@ on:
   workflow_dispatch:
     inputs:
       package:
-        description: 'Name of the package to build'
+        description: "Name of the package to build"
         required: true
-        default: 'livekit-plugins-browser'
+        default: "livekit-plugins-browser"
       artifact_name:
-        description: 'Artifact name for the distribution package'
+        description: "Artifact name for the distribution package"
         required: true
-        default: 'build-artifact'
+        default: "build-artifact"
 
 jobs:
   build_plugins:
     runs-on: ubuntu-latest
     if: |
       inputs.package == 'livekit-agents' ||
+      inputs.package == 'livekit-plugins-assemblyai' ||
       inputs.package == 'livekit-plugins-azure' ||
       inputs.package == 'livekit-plugins-cartesia' ||
       inputs.package == 'livekit-plugins-deepgram' ||
@@ -35,7 +36,8 @@ jobs:
       inputs.package == 'livekit-plugins-openai' ||
       inputs.package == 'livekit-plugins-rag' ||
       inputs.package == 'livekit-plugins-silero' ||
-      inputs.package == 'livekit-plugins-anthropic'
+      inputs.package == 'livekit-plugins-anthropic' ||
+      inputs.package == 'livekit-plugins-llama-index'
 
     defaults:
       run:
