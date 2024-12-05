@@ -1,23 +1,17 @@
 from __future__ import annotations
 
 import os
-import numpy as np
 from dataclasses import dataclass
 from typing import Any, Optional
 
 import aiohttp
-from livekit.agents import (
-    DEFAULT_API_CONNECT_OPTIONS,
-    APIConnectOptions,
-    tts,
-    utils
-)
+from livekit.agents import DEFAULT_API_CONNECT_OPTIONS, APIConnectOptions, tts, utils
 
 from .log import logger
-from .models import TTSLanguages, TTSModels, TTSVoices, TTSEncoding
+from .models import TTSEncoding, TTSLanguages, TTSModels, TTSVoices
 
-API_BASE_URL = "https://waves-api.smallest.ai/api/v1"
 NUM_CHANNELS = 1
+API_BASE_URL = "https://waves-api.smallest.ai/api/v1"
 
 @dataclass
 class _TTSOptions:
@@ -74,7 +68,7 @@ class TTS(tts.TTS):
             voice=voice,
             api_key=api_key,
             transliterate=transliterate,
-            add_wav_header=False
+            add_wav_header=False,
         )
         self._session = http_session
 
@@ -133,7 +127,7 @@ class ChunkedStream(tts.ChunkedStream):
             if resp.status != 200:
                 error_text = await resp.text()
                 raise Exception(f"smallest.ai API error: {resp.status} - {error_text}")
-            
+
             async for data, _ in resp.content.iter_chunks():
                 for frame in bstream.write(data):
                     self._event_ch.send_nowait(

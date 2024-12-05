@@ -12,27 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .models import TTSEncoding, TTSModels, TTSLanguages, TTSVoices
+from livekit.agents import Plugin
+
+from .log import logger
+from .models import TTSEncoding, TTSLanguages, TTSModels, TTSVoices
 from .tts import TTS
 from .version import __version__
 
 __all__ = [
+    "__version__",
     "TTS",
     "TTSEncoding",
-    "TTSModels",
     "TTSLanguages",
+    "TTSModels",
     "TTSVoices",
-    "__version__",
 ]
-
-from livekit.agents import Plugin
-
-from .log import logger
-
 
 class SmallestPlugin(Plugin):
     def __init__(self):
         super().__init__(__name__, __version__, __package__, logger)
-
 
 Plugin.register_plugin(SmallestPlugin())
