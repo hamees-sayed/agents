@@ -13,6 +13,7 @@ from .models import TTSEncoding, TTSLanguages, TTSModels, TTSVoices
 NUM_CHANNELS = 1
 API_BASE_URL = "https://waves-api.smallest.ai/api/v1"
 
+
 @dataclass
 class _TTSOptions:
     model: TTSModels

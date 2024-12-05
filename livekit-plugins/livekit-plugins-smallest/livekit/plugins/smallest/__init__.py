@@ -28,8 +28,10 @@ __all__ = [
     "TTSVoices",
 ]
 
+
 class SmallestPlugin(Plugin):
     def __init__(self):
         super().__init__(__name__, __version__, __package__, logger)
+
 
 Plugin.register_plugin(SmallestPlugin())

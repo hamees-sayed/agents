@@ -20,11 +20,8 @@ import setuptools.command.build_py
 
 here = pathlib.Path(__file__).parent.resolve()
 about = {}
-with open(
-    os.path.join(here, "livekit", "plugins", "smallest", "version.py"), "r"
-) as f:
+with open(os.path.join(here, "livekit", "plugins", "smallest", "version.py"), "r") as f:
     exec(f.read(), about)
-
 
 setuptools.setup(
     name="livekit-plugins-smallest",
