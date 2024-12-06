@@ -25,6 +25,7 @@ class _TTSOptions:
     add_wav_header: bool
     transliterate: Optional[bool]
 
+
 class TTS(tts.TTS):
     def __init__(
         self,
