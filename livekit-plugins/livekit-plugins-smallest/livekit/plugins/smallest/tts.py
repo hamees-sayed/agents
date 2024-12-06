@@ -23,7 +23,7 @@ class _TTSOptions:
     api_key: str
     language: TTSLanguages
     add_wav_header: bool
-
+    transliterate: Optional[bool]
 
 class TTS(tts.TTS):
     def __init__(
