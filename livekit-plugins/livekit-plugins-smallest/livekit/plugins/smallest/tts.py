@@ -11,6 +11,7 @@ from .log import logger
 from .models import TTSEncoding, TTSLanguages, TTSModels, TTSVoices
 
 NUM_CHANNELS = 1
+CHUNK_SIZE = 250
 API_BASE_URL = "https://waves-api.smallest.ai/api/v1"
 
 
@@ -116,34 +117,37 @@ class ChunkedStream(tts.ChunkedStream):
         )
         request_id, segment_id = utils.shortuuid(), utils.shortuuid()
 
-        data = _to_smallest_options(self._opts)
-        data["text"] = self._text
+        text_chunks = _split_into_chunks(self._text)
 
-        url = f"{API_BASE_URL}/{self._opts.model}/get_speech"
-        headers = {
-            "Authorization": f"Bearer {self._opts.api_key}",
-            "Content-Type": "application/json",
-        }
+        for chunk in text_chunks:
+            data = _to_smallest_options(self._opts)
+            data["text"] = chunk
 
-        async with self._session.post(url, headers=headers, json=data) as resp:
-            if resp.status != 200:
-                error_text = await resp.text()
-                raise Exception(f"smallest.ai API error: {resp.status} - {error_text}")
+            url = f"{API_BASE_URL}/{self._opts.model}/get_speech"
+            headers = {
+                "Authorization": f"Bearer {self._opts.api_key}",
+                "Content-Type": "application/json",
+            }
 
-            async for data, _ in resp.content.iter_chunks():
-                for frame in bstream.write(data):
+            async with self._session.post(url, headers=headers, json=data) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    raise Exception(f"smallest.ai API error: {resp.status} - {error_text}")
+
+                async for data, _ in resp.content.iter_chunks():
+                    for frame in bstream.write(data):
+                        self._event_ch.send_nowait(
+                            tts.SynthesizedAudio(
+                                request_id=request_id, segment_id=segment_id, frame=frame
+                            )
+                        )
+
+                for frame in bstream.flush():
                     self._event_ch.send_nowait(
                         tts.SynthesizedAudio(
                             request_id=request_id, segment_id=segment_id, frame=frame
                         )
                     )
-
-            for frame in bstream.flush():
-                self._event_ch.send_nowait(
-                    tts.SynthesizedAudio(
-                        request_id=request_id, segment_id=segment_id, frame=frame
-                    )
-                )
 
 
 def _to_smallest_options(opts: _TTSOptions) -> dict[str, Any]:
@@ -152,3 +156,30 @@ def _to_smallest_options(opts: _TTSOptions) -> dict[str, Any]:
         "sample_rate": opts.sample_rate,
         "add_wav_header": opts.add_wav_header,
     }
+
+def _split_into_chunks(text: str) -> List[str]:
+    chunks = []
+    while text:
+        if len(text) <= CHUNK_SIZE:
+            chunks.append(text.strip())
+            break
+
+        chunk_text = text[:CHUNK_SIZE]
+        last_break_index = -1
+
+        for i in range(len(chunk_text) - 1, -1, -1):
+            if chunk_text[i] in '-.—!?;:…\n':
+                last_break_index = i
+                break
+
+        if last_break_index == -1:
+            last_space = chunk_text.rfind(' ')
+            if last_space != -1:
+                last_break_index = last_space
+            else:
+                last_break_index = CHUNK_SIZE - 1
+
+        chunks.append(text[:last_break_index + 1].strip())
+        text = text[last_break_index + 1:].strip()
+
+    return chunks
