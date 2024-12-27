@@ -22,5 +22,6 @@ async def _fetch_voice_and_model() -> Tuple[List[str], List[str]]:
 models, voices = asyncio.run(_fetch_voice_and_model())
 
 TTSLanguages = Literal["en", "hi"]
+TTSEncoding = Literal["pcm_s16le"]
 TTSModels = models
 TTSVoices = voices
