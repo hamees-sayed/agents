@@ -1,5 +1,13 @@
 # livekit-agents
 
+## 0.12.6
+
+### Patch Changes
+
+- improved handling of LLM errors, do not retry if already began - [#1298](https://github.com/livekit/agents/pull/1298) ([@davidzhao](https://github.com/davidzhao))
+
+- improve interruption handling, avoid agent from getting stuck - [#1290](https://github.com/livekit/agents/pull/1290) ([@davidzhao](https://github.com/davidzhao))
+
 ## 0.12.5
 
 ### Patch Changes
