@@ -5,7 +5,7 @@ Agent Framework plugin for voice synthesis with [Smallest](https://smallest.ai/)
 ## Installation
 
 ```bash
-pip install livekit-plugins-smallest
+pip install livekit-plugins-smallestai
 ```
 
 ## Pre-requisites
