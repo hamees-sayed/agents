@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 import aiohttp
 from livekit.agents import DEFAULT_API_CONNECT_OPTIONS, APIConnectOptions, tts, utils
@@ -132,13 +132,17 @@ class ChunkedStream(tts.ChunkedStream):
             async with self._session.post(url, headers=headers, json=data) as resp:
                 if resp.status != 200:
                     error_text = await resp.text()
-                    raise Exception(f"smallest.ai API error: {resp.status} - {error_text}")
+                    raise Exception(
+                        f"smallest.ai API error: {resp.status} - {error_text}"
+                    )
 
                 async for data, _ in resp.content.iter_chunks():
                     for frame in bstream.write(data):
                         self._event_ch.send_nowait(
                             tts.SynthesizedAudio(
-                                request_id=request_id, segment_id=segment_id, frame=frame
+                                request_id=request_id,
+                                segment_id=segment_id,
+                                frame=frame,
                             )
                         )
 
@@ -157,6 +161,7 @@ def _to_smallest_options(opts: _TTSOptions) -> dict[str, Any]:
         "add_wav_header": opts.add_wav_header,
     }
 
+
 def _split_into_chunks(text: str) -> List[str]:
     chunks = []
     while text:
@@ -168,18 +173,18 @@ def _split_into_chunks(text: str) -> List[str]:
         last_break_index = -1
 
         for i in range(len(chunk_text) - 1, -1, -1):
-            if chunk_text[i] in '-.—!?;:…\n':
+            if chunk_text[i] in "-.—!?;:…\n":
                 last_break_index = i
                 break
 
         if last_break_index == -1:
-            last_space = chunk_text.rfind(' ')
+            last_space = chunk_text.rfind(" ")
             if last_space != -1:
                 last_break_index = last_space
             else:
                 last_break_index = CHUNK_SIZE - 1
 
-        chunks.append(text[:last_break_index + 1].strip())
-        text = text[last_break_index + 1:].strip()
+        chunks.append(text[: last_break_index + 1].strip())
+        text = text[last_break_index + 1 :].strip()
 
     return chunks

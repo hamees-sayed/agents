@@ -18,7 +18,7 @@ from livekit.plugins import (
     google,
     openai,
     playai,
-    smallestai
+    smallestai,
 )
 
 from .conftest import TEST_CONNECT_OPTIONS
@@ -54,7 +54,7 @@ SYNTHESIZE_TTS: list[Callable[[], tts.TTS]] = [
     pytest.param(lambda: cartesia.TTS(), id="cartesia"),
     pytest.param(lambda: deepgram.TTS(), id="deepgram"),
     pytest.param(lambda: playai.TTS(), id="playai"),
-    pytest.param(lambda: smallestai.TTS(), id="smallestai")
+    pytest.param(lambda: smallestai.TTS(), id="smallestai"),
 ]
 
 
