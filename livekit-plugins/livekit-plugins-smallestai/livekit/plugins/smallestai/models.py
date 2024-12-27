@@ -1,27 +1,76 @@
-import asyncio
-from typing import List, Literal, Tuple
-
-import aiohttp
-
-API_BASE_URL = "https://waves-api.smallest.ai/api/v1"
-
-
-async def _fetch_voice_and_model() -> Tuple[List[str], List[str]]:
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"{API_BASE_URL}/voice/get-all-models") as response:
-            api_response = await response.json()
-
-            voices = []
-            for model in api_response:
-                for voice in model["voiceIds"]:
-                    voices.append(voice["voiceId"])
-            models = [model["modelName"] for model in api_response]
-            return models, voices
-
-
-models, voices = asyncio.run(_fetch_voice_and_model())
+from typing import Literal
 
 TTSLanguages = Literal["en", "hi"]
 TTSEncoding = Literal["pcm_s16le"]
-TTSModels = models
-TTSVoices = voices
+TTSModels = Literal["lightning"]
+TTSVoices = Literal[
+    "arman",
+    "diya",
+    "raman",
+    "ananya",
+    "isha",
+    "william",
+    "aarav",
+    "shrishti",
+    "niharika",
+    "deepika",
+    "raghav",
+    "kajal",
+    "radhika",
+    "mansi",
+    "nisha",
+    "saurabh",
+    "pooja",
+    "saina",
+    "sanya",
+    "aravind",
+    "mithali",
+    "raj",
+    "james",
+    "jasmine",
+    "emily",
+    "arnav",
+    "aishwarya",
+    "billy",
+    "britanny",
+    "donald",
+    "harsh",
+    "kevin",
+    "minerva",
+    "ricky",
+    "riddhima",
+    "vardhan",
+    "whictoria",
+    "winston",
+    "gogol",
+    "kabir",
+    "martin",
+    "arjun",
+    "siddharth",
+    "ivan",
+    "carlos",
+    "ramesh",
+    "david",
+    "timur",
+    "rizky",
+    "ketan",
+    "vishnu",
+    "andrei",
+    "prakash",
+    "nikolai",
+    "joao",
+    "willem",
+    "piotr",
+    "mika",
+    "erik",
+    "hans",
+    "oleksandr",
+    "gurpreet",
+    "niran",
+    "rajesh",
+    "julien",
+    "emre",
+    "alexandros",
+    "minh",
+    "arindam",
+]
