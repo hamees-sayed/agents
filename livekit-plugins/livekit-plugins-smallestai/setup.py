@@ -20,13 +20,13 @@ import setuptools.command.build_py
 
 here = pathlib.Path(__file__).parent.resolve()
 about = {}
-with open(os.path.join(here, "livekit", "plugins", "smallest", "version.py"), "r") as f:
+with open(os.path.join(here, "livekit", "plugins", "smallestai", "version.py"), "r") as f:
     exec(f.read(), about)
 
 setuptools.setup(
-    name="livekit-plugins-smallest",
+    name="livekit-plugins-smallestai",
     version=about["__version__"],
-    description="LiveKit Agents Plugin for Smallest",
+    description="LiveKit Agents Plugin for Smallest AI",
     long_description=(here / "README.md").read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",
     url="https://github.com/livekit/agents",
