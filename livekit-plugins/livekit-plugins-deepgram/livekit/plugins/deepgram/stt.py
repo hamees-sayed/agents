@@ -121,7 +121,8 @@ class STT(stt.STT):
         sample_rate: int = 16000,
         no_delay: bool = True,
         endpointing_ms: int = 25,
-        filler_words: bool = False,
+        # enable filler words by default to improve turn detector accuracy
+        filler_words: bool = True,
         keywords: list[Tuple[str, float]] = [],
         profanity_filter: bool = False,
         api_key: str | None = None,
@@ -470,7 +471,9 @@ class SpeechStream(stt.SpeechStream):
                         return
 
                     # this will trigger a reconnection, see the _run loop
-                    raise Exception("deepgram connection closed unexpectedly")
+                    raise APIStatusError(
+                        message="deepgram connection closed unexpectedly"
+                    )
 
                 if msg.type != aiohttp.WSMsgType.TEXT:
                     logger.warning("unexpected deepgram message type %s", msg.type)
@@ -497,6 +500,12 @@ class SpeechStream(stt.SpeechStream):
                         [asyncio.gather(*tasks), wait_reconnect_task],
                         return_when=asyncio.FIRST_COMPLETED,
                     )  # type: ignore
+
+                    # propagate exceptions from completed tasks
+                    for task in done:
+                        if task != wait_reconnect_task:
+                            task.result()
+
                     if wait_reconnect_task not in done:
                         break
 
