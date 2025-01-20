@@ -173,7 +173,7 @@ def _split_into_chunks(text: str) -> List[str]:
         last_break_index = -1
 
         for i in range(len(chunk_text) - 1, -1, -1):
-            if chunk_text[i] in "-.—!?;:…\n":
+            if chunk_text[i] in "-.—!?;,:…|।":
                 last_break_index = i
                 break
 
