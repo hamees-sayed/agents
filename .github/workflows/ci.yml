@@ -83,3 +83,4 @@ jobs:
                -p livekit.plugins.playai \
                -p livekit.plugins.assemblyai \
                -p livekit.plugins.smallestai
+               -p livekit.plugins.rime \
