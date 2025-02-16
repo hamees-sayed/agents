@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import dataclass
 from typing import Any, List, Optional
 
@@ -11,7 +12,7 @@ from .log import logger
 from .models import TTSEncoding, TTSLanguages, TTSModels, TTSVoices
 
 NUM_CHANNELS = 1
-CHUNK_SIZE = 250
+SENTENCE_END_REGEX = re.compile(r'.*[-.—!?,;:…।|]$')
 API_BASE_URL = "https://waves-api.smallest.ai/api/v1"
 
 
@@ -117,7 +118,10 @@ class ChunkedStream(tts.ChunkedStream):
         )
         request_id, segment_id = utils.shortuuid(), utils.shortuuid()
 
-        text_chunks = _split_into_chunks(self._text)
+        self._chunk_size = 250
+        if self._opts.model == "lightning-large":
+            self._chunk_size = 140
+        text_chunks = _split_into_chunks(self._text, self._chunk_size)
 
         for chunk in text_chunks:
             data = _to_smallest_options(self._opts)
@@ -162,29 +166,31 @@ def _to_smallest_options(opts: _TTSOptions) -> dict[str, Any]:
     }
 
 
-def _split_into_chunks(text: str) -> List[str]:
+def _split_into_chunks(text: str, chunk_size: int = 250) -> List[str]:
     chunks = []
     while text:
-        if len(text) <= CHUNK_SIZE:
+        if len(text) <= chunk_size:
             chunks.append(text.strip())
             break
 
-        chunk_text = text[:CHUNK_SIZE]
+        chunk_text = text[:chunk_size]
         last_break_index = -1
 
+        # Find last sentence boundary using regex
         for i in range(len(chunk_text) - 1, -1, -1):
-            if chunk_text[i] in "-.—!?;,:…|।":
+            if SENTENCE_END_REGEX.match(chunk_text[:i + 1]):
                 last_break_index = i
                 break
 
         if last_break_index == -1:
-            last_space = chunk_text.rfind(" ")
+            # Fallback to space if no sentence boundary found
+            last_space = chunk_text.rfind(' ')
             if last_space != -1:
-                last_break_index = last_space
+                last_break_index = last_space 
             else:
-                last_break_index = CHUNK_SIZE - 1
+                last_break_index = chunk_size - 1
 
-        chunks.append(text[: last_break_index + 1].strip())
-        text = text[last_break_index + 1 :].strip()
+        chunks.append(text[:last_break_index + 1].strip())
+        text = text[last_break_index + 1:].strip()
 
     return chunks
