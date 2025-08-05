@@ -187,48 +187,50 @@ class ChunkedStream(tts.ChunkedStream):
         self._chunk_size = 250
         if self._opts.model == "lightning-large" or self._opts.model == "lightning-v2":
             self._chunk_size = 140
-        text_chunks = _split_into_chunks(self._input_text, self._chunk_size)
+        # text_chunks = _split_into_chunks(self._input_text, self._chunk_size)
 
-        for chunk in text_chunks:
+        # try:
+        #     for chunk in text_chunks:
+        try:
             data = _to_smallest_options(self._opts)
-            data["text"] = chunk
+            data["text"] = self._input_text
 
             url = f"{SMALLEST_BASE_URL}/{self._opts.model}/get_speech"
+            if self._opts.model != "lightning-v2":
+                url = f"{SMALLEST_BASE_URL}/{self._opts.model}/get_speech_long_text"
+
             headers = {
                 "Authorization": f"Bearer {self._opts.api_key}",
                 "Content-Type": "application/json",
             }
+            async with self._tts._ensure_session().post(
+                url,
+                headers=headers,
+                json=data,
+                timeout=aiohttp.ClientTimeout(total=self._conn_options.timeout),
+            ) as resp:
+                resp.raise_for_status()
 
-            try:
-                async with self._tts._ensure_session().post(
-                    url,
-                    headers=headers,
-                    json=data,
-                    timeout=aiohttp.ClientTimeout(
-                        total=30, sock_connect=self._conn_options.timeout
-                    ),
-                ) as resp:
-                    resp.raise_for_status()
+                output_emitter.initialize(
+                    request_id=utils.shortuuid(),
+                    sample_rate=self._opts.sample_rate,
+                    num_channels=NUM_CHANNELS,
+                    mime_type="audio/pcm",
+                )
 
-                    output_emitter.initialize(
-                        request_id=utils.shortuuid(),
-                        sample_rate=self._opts.sample_rate,
-                        num_channels=NUM_CHANNELS,
-                        mime_type="audio/pcm",
-                    )
+                async for data, _ in resp.content.iter_chunks():
+                    output_emitter.push(data)
 
-                    async for data, _ in resp.content.iter_chunks():
-                        output_emitter.push(data)
+                output_emitter.flush()
 
-                    output_emitter.flush()
-            except asyncio.TimeoutError:
-                raise APITimeoutError() from None
-            except aiohttp.ClientResponseError as e:
-                raise APIStatusError(
-                    message=e.message, status_code=e.status, request_id=None, body=None
-                ) from None
-            except Exception as e:
-                raise APIConnectionError() from e
+        except asyncio.TimeoutError:
+            raise APITimeoutError() from None
+        except aiohttp.ClientResponseError as e:
+            raise APIStatusError(
+                message=e.message, status_code=e.status, request_id=None, body=None
+            ) from None
+        except Exception as e:
+            raise APIConnectionError() from e
 
 
 def _to_smallest_options(opts: _TTSOptions) -> dict[str, Any]:
