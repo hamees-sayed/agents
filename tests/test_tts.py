@@ -34,6 +34,7 @@ from livekit.plugins import (
     playai,
     resemble,
     rime,
+    smallestai,
     speechify,
     spitch,
 )
@@ -257,6 +258,13 @@ SYNTHESIZE_TTS = [
         },
         id="inworld",
     ),
+    pytest.param(
+        lambda: {
+            "tts": smallestai.TTS(),
+            "proxy-upstream": "api.smallestai.com:443",
+        },
+        id="smallestai",
+    )
 ]
 
 PLUGIN = os.getenv("PLUGIN", "").strip()
@@ -464,6 +472,13 @@ STREAM_TTS = [
             "proxy-upstream": "api.inworld.ai:443",
         },
         id="inworld-stream-adapter",
+    ),
+    pytest.param(
+        lambda: {
+            "tts": tts.StreamAdapter(tts=smallestai.TTS()),
+            "proxy-upstream": "api.smallestai.com:443",
+        },
+        id="smallestai-stream-adapter",
     ),
 ]
 
